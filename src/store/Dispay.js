@@ -6,6 +6,10 @@ const displaySlice=createSlice({
         totalQuantity:0
     },
     reducers:{
+        replace(state,action){
+            state.totalQuantity=action.payload.totalQuantity;
+            state.items=action.payload.items;
+        },
         addHandler(state,action){
             const newItem=action.payload
             const existingItem=state.items.find(item=>item.id===newItem.id)

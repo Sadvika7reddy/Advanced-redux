@@ -6,13 +6,42 @@ import { useEffect } from 'react';
 import { cartAction } from './store/Cart';
 import { Fragment } from 'react';
 import Notification from './components/UI/Notification';
+import { displayAction } from './store/Dispay';
 let initial=true;
 function App() {
  const isVisible= useSelector(state=>state.ui.cartisVisible)
  const cart=useSelector(state=>state.display)
  const notification=useSelector(state=>state.ui.notification)
  const dispatch=useDispatch();
+ 
+useEffect(()=>{
+  const cart=async()=>{
+  const cartHandler= async ()=>{
+    let response=await fetch("https://add-movies-c908f-default-rtdb.firebaseio.com/cart.json")
+    if(!response.ok){
 
+    }
+    const data=await response.json();
+    return data;
+  }
+  try{
+    const cartData= await cartHandler();
+    dispatch(displayAction.replace({
+      items:cartData.items||[],
+      totalQuantity:cartData.totalQuantity
+    }))
+  }
+  catch(error){
+    dispatch(cartAction.responses({
+      status:"error",
+      message:"error occures",
+      title:"sending failed"
+    }))
+  }
+}
+cart();
+
+},[dispatch])
  useEffect(()=>{
   const eventHandler= async()=>{
     let response=await fetch("https://add-movies-c908f-default-rtdb.firebaseio.com/cart.json",{
